@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seasonal Produce by Month</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; line-height: 1.5; }
+    h1 { margin-bottom: 1rem; }
+    section { margin-bottom: 1.5rem; }
+    section h2 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+    section p { margin-left: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Seasonal Produce by Month</h1>
+  <div id="season-list"></div>
+
+  <script>
+    // Paste in your month→items map here:
+    const seasons = {
+      "January": [
+        "Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage",
+        "Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit",
+        "Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes",
+        "Turnips","Winter Squash"
+      ],
+      "February": [
+        "Beets","Cabbage","Carrots","Collard Greens","Grapefruit","Kale",
+        "Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears",
+        "Potatoes","Spinach","Turnips","Winter Squash"
+      ],
+      "March": [
+        "Apples","Cabbage","Carrots","Dried Beans","Herbs","Onions",
+        "Parsnips","Potatoes","Turnips","Winter Squash"
+      ],
+      "April": [
+        "Apples","Carrots","Dried Beans","Herbs","Lettuce","Onions",
+        "Parsnips","Potatoes","Radishes"
+      ],
+      "May": [
+        "Apples","Asparagus","Beet Greens","Dried Beans","Herbs","Lettuce",
+        "Onions","Potatoes","Radishes","Rhubarb","Spinach","Turnip Greens"
+      ],
+      "June": [
+        "Apples","Asparagus","Beet Greens","Beets","Broccoli","Cabbage",
+        "Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions",
+        "Peas","Potatoes","Radishes","Rhubarb","Spinach","Strawberries",
+        "Summer Squash","Swiss Chard"
+      ],
+      "July": [
+        "Apples","Beet Greens","Beets","Blueberries","Broccoli","Cabbage",
+        "Carrots","Cherries","Collard Greens","Dried Beans","Garlic","Herbs",
+        "Lettuce","Mustard Greens","Onions","Peas","Peppers","Potatoes",
+        "Radishes","Raspberries","Rhubarb","Snap Beans","Spinach",
+        "Strawberries","Summer Squash","Swiss Chard","Tomatoes","Zucchini"
+      ],
+      "August": [
+        "Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli",
+        "Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens",
+        "Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Leeks",
+        "Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers",
+        "Plums","Potatoes","Radishes","Snap Beans","Spinach","Summer Squash",
+        "Swiss Chard","Tomatoes","Zucchini"
+      ],
+      "September": [
+        "Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli",
+        "Brussels Sprouts","Cabbage","Cantaloupe","Carrots","Cauliflower",
+        "Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic",
+        "Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions",
+        "Peaches","Pears","Peppers","Plums","Potatoes","Pumpkin","Radishes",
+        "Raspberries","Snap Beans","Spinach","Summer Squash","Swiss Chard",
+        "Tomatoes","Zucchini"
+      ],
+      "October": [
+        "Apples","Beets","Broccoli","Brussels Sprouts","Cabbage","Carrots",
+        "Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Dried Beans",
+        "Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce",
+        "Mustard Greens","Onions","Parsnips","Pears","Peppers","Potatoes",
+        "Pumpkins","Radishes","Snap Beans","Spinach","Summer Squash",
+        "Swiss Chard","Tomatoes","Turnips","Zucchini"
+      ],
+      "November": [
+        "Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage",
+        "Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit",
+        "Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes",
+        "Spinach","Turnips","Winter Squash"
+      ],
+      "December": [
+        "Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage",
+        "Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit",
+        "Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes",
+        "Spinach","Turnips","Winter Squash"
+      ]
+    };
+
+    const listContainer = document.getElementById('season-list');
+    for (const [month, items] of Object.entries(seasons)) {
+      const section = document.createElement('section');
+      section.innerHTML = `
+        <h2>${month}</h2>
+        <p>${items.join(' · ')}</p>
+      `;
+      listContainer.appendChild(section);
+    }
+  </script>
+</body>
+</html>
