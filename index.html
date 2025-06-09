@@ -26,19 +26,19 @@
       color: #e0e0e0;
     }
     .carousel-item { padding: 1rem; }
-    h2, h3 {
-      transition: color 0.3s;
-    }
-    body.dark h2, body.dark h3 {
-      color: #e0e0e0;
-    }
+    h2, h3 { transition: color 0.3s; }
+    body.dark h2, body.dark h3 { color: #e0e0e0; }
     .tier-section { margin-bottom: 1.5rem; }
     .tier-list { list-style: none; padding-left: 0; }
-    .tier-list li { margin: .25rem 0; display: flex; align-items: center; }
+    .tier-list li {
+      margin: .25rem 0;
+      display: flex;
+      align-items: center;
+    }
     .btn-star, .btn-alert {
       background: none;
       border: none;
-      padding: 0 0.25rem;
+      padding: 0 .25rem;
       font-size: 1.2rem;
       cursor: pointer;
     }
@@ -97,184 +97,177 @@
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Seasonality data
-    const seasonsEN = { /* ... same as before ... */ };
-    const seasonsES = {
-      "Enero": seasonsEN.January, "Febrero": seasonsEN.February,
-      "Marzo": seasonsEN.March, "Abril": seasonsEN.April,
-      "Mayo": seasonsEN.May, "Junio": seasonsEN.June,
-      "Julio": seasonsEN.July, "Agosto": seasonsEN.August,
-      "Septiembre": seasonsEN.September, "Octubre": seasonsEN.October,
-      "Noviembre": seasonsEN.November, "Diciembre": seasonsEN.December
+    // 1) Full English seasonality data
+    const seasonsEN = {
+      "January":    ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Turnips","Winter Squash"],
+      "February":   ["Beets","Cabbage","Carrots","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
+      "March":      ["Apples","Cabbage","Carrots","Dried Beans","Herbs","Onions","Parsnips","Potatoes","Turnips","Winter Squash"],
+      "April":      ["Apples","Carrots","Dried Beans","Herbs","Lettuce","Onions","Parsnips","Potatoes","Radishes"],
+      "May":        ["Apples","Asparagus","Beet Greens","Dried Beans","Herbs","Lettuce","Onions","Potatoes","Radishes","Rhubarb","Spinach","Turnip Greens"],
+      "June":       ["Apples","Asparagus","Beet Greens","Beets","Broccoli","Cabbage","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Potatoes","Radishes","Rhubarb","Spinach","Strawberries","Summer Squash","Swiss Chard"],
+      "July":       ["Apples","Beet Greens","Beets","Blueberries","Broccoli","Cabbage","Carrots","Cherries","Collard Greens","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Peppers","Potatoes","Radishes","Raspberries","Rhubarb","Snap Beans","Spinach","Strawberries","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
+      "August":     ["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Leeks","Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers","Plums","Potatoes","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
+      "September":  ["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Brussels Sprouts","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers","Plums","Potatoes","Pumpkin","Radishes","Raspberries","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
+      "October":    ["Apples","Beets","Broccoli","Brussels Sprouts","Cabbage","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Dried Beans","Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions","Parsnips","Pears","Peppers","Potatoes","Pumpkins","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Turnips","Zucchini"],
+      "November":   ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
+      "December":   ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"]
     };
 
-    // Tier labels
+    // 2) Spanish mapping
+    const seasonsES = {
+      "Enero": seasonsEN.January,   "Febrero": seasonsEN.February,
+      "Marzo": seasonsEN.March,     "Abril": seasonsEN.April,
+      "Mayo": seasonsEN.May,        "Junio": seasonsEN.June,
+      "Julio": seasonsEN.July,      "Agosto": seasonsEN.August,
+      "Septiembre": seasonsEN.September, "Octubre": seasonsEN.October,
+      "Noviembre": seasonsEN.November,   "Diciembre": seasonsEN.December
+    };
+
+    // 3) Tier labels
     const tierLabelsEN = { S: "Top Picks", A: "Great Deals", B: "Okay", D: "Skip" };
     const tierLabelsES = { S: "Mejores", A: "Grandes Ofertas", B: "Aceptable", D: "Omitir" };
 
-    // Settings with persistence
+    // 4) Settings and persistence
     const settings = {
       dark: JSON.parse(localStorage.getItem("dark")) || false,
       stars: JSON.parse(localStorage.getItem("stars")) || false,
       alerts: JSON.parse(localStorage.getItem("alerts")) || false,
       esp: JSON.parse(localStorage.getItem("esp")) || false
     };
-    function saveSetting(key) {
-      localStorage.setItem(key, JSON.stringify(settings[key]));
-    }
+    function save(key){ localStorage.setItem(key, JSON.stringify(settings[key])); }
 
-    // Toggle functions
     document.getElementById("toggleDark").onclick = () => {
-      settings.dark = !settings.dark;
-      document.body.classList.toggle("dark", settings.dark);
-      saveSetting("dark");
+      settings.dark = !settings.dark; save("dark"); buildCarousel();
     };
     document.getElementById("toggleStars").onclick = () => {
-      settings.stars = !settings.stars;
-      saveSetting("stars");
-      buildCarousel();
+      settings.stars = !settings.stars; save("stars"); buildCarousel();
     };
     document.getElementById("toggleAlerts").onclick = () => {
-      settings.alerts = !settings.alerts;
-      saveSetting("alerts");
-      buildCarousel();
+      settings.alerts = !settings.alerts; save("alerts"); buildCarousel();
     };
     document.getElementById("toggleLang").onclick = () => {
-      settings.esp = !settings.esp;
-      saveSetting("esp");
-      buildCarousel();
+      settings.esp = !settings.esp; save("esp"); buildCarousel();
     };
 
-    // Tier logic
-    function computeTier(today,best) {
-      if (today==null||best==null) return "D";
-      const r=today/best;
-      if(r<=1.10) return "S";
-      if(r<=1.30) return "A";
-      if(r<=1.60) return "B";
+    // 5) Compute tier
+    function computeTier(today, best) {
+      if (today == null || best == null) return "D";
+      const r = today / best;
+      if (r <= 1.10) return "S";
+      if (r <= 1.30) return "A";
+      if (r <= 1.60) return "B";
       return "D";
     }
 
-    // Favorites & alerts & cart
-    function getFavorites(){ return JSON.parse(localStorage.getItem("fav"))||[]; }
-    function toggleFavorite(name){
-      const fav=getFavorites(), idx=fav.indexOf(name);
-      if(idx>=0) fav.splice(idx,1); else fav.push(name);
-      localStorage.setItem("fav",JSON.stringify(fav));
+    // 6) Favorites, alerts, and cart
+    function getStorage(key){ return JSON.parse(localStorage.getItem(key))||[]; }
+    function toggleItem(key, name){ 
+      const arr = getStorage(key), idx = arr.indexOf(name);
+      if(idx>=0) arr.splice(idx,1); else arr.push(name);
+      localStorage.setItem(key, JSON.stringify(arr));
       buildCarousel();
     }
-    function getAlerts(){ return JSON.parse(localStorage.getItem("alrt"))||[]; }
-    function toggleAlert(name){
-      const al=getAlerts(), idx=al.indexOf(name);
-      if(idx>=0) al.splice(idx,1); else al.push(name);
-      localStorage.setItem("alrt",JSON.stringify(al));
-      buildCarousel();
-    }
-    function getList(){ return JSON.parse(localStorage.getItem("shoppingList"))||[]; }
     function addToList(name){
-      const ls=getList(); if(!ls.includes(name))ls.push(name);
-      localStorage.setItem("shoppingList",JSON.stringify(ls));
+      const list = getStorage("shoppingList");
+      if(!list.includes(name)) list.push(name);
+      localStorage.setItem("shoppingList", JSON.stringify(list));
       updateListBadge();
     }
     function updateListBadge(){
-      document.getElementById("listBadge").textContent=getList().length;
+      document.getElementById("listBadge").textContent = getStorage("shoppingList").length;
     }
 
-    // Build carousel
+    // 7) Build the carousel
     async function buildCarousel(){
-      // apply dark
-      document.body.classList.toggle("dark",settings.dark);
-
-      const seasons = settings.esp? seasonsES : seasonsEN;
-      const tiers = settings.esp? tierLabelsES : tierLabelsEN;
+      document.body.classList.toggle("dark", settings.dark);
+      const seasons = settings.esp ? seasonsES : seasonsEN;
+      const labels = settings.esp ? tierLabelsES : tierLabelsEN;
       const prices = await (await fetch("prices.json")).json();
-
       const ind = document.getElementById("carousel-indicators");
       const inner = document.getElementById("carousel-inner");
-      ind.innerHTML=""; inner.innerHTML="";
+      ind.innerHTML = ""; inner.innerHTML = "";
 
-      Object.keys(seasons).forEach((month,idx)=>{
+      Object.keys(seasons).forEach((month, idx) => {
         // indicator
-        const dot=document.createElement("button");
+        const dot = document.createElement("button");
         dot.type="button"; dot.dataset.bsTarget="#produceCarousel";
         dot.dataset.bsSlideTo=idx;
         if(idx===0) dot.classList.add("active");
-        dot.setAttribute("aria-label",month);
+        dot.setAttribute("aria-label", month);
         ind.appendChild(dot);
 
         // slide
-        const slide=document.createElement("div");
-        slide.className="carousel-item"+(idx===0?" active":"");
-        slide.innerHTML=`<h2>${month}</h2>`;
+        const slide = document.createElement("div");
+        slide.className = "carousel-item" + (idx===0?" active":"");
+        slide.innerHTML = `<h2>${month}</h2>`;
 
-        // annotate & bucket
-        const items=seasons[month].map(name=>{
-          const p=prices[name]||{};
-          const tier=computeTier(p.today,p.best);
-          return {name,today:p.today,best:p.best,tier};
+        // annotate and bucket
+        const annotated = seasons[month].map(name => {
+          const p = prices[name]||{};
+          return { name, today:p.today, best:p.best, tier:computeTier(p.today,p.best) };
         });
-        const buckets={S:[],A:[],B:[],D:[]};
-        items.forEach(i=>buckets[i.tier].push(i));
+        const buckets = { S:[], A:[], B:[], D:[] };
+        annotated.forEach(i => buckets[i.tier].push(i));
 
         // render tiers
-        ["S","A","B","D"].forEach(t=>{
-          const section=document.createElement("div");
-          section.className="tier-section";
-          section.innerHTML=`<h3>${t} — ${tiers[t]}</h3>`;
-          const ul=document.createElement("ul"); ul.className="tier-list";
-          buckets[t].forEach(i=>{
-            const li=document.createElement("li");
+        ["S","A","B","D"].forEach(t => {
+          const sec = document.createElement("div"); sec.className="tier-section";
+          sec.innerHTML = `<h3>${t} — ${labels[t]}</h3>`;
+          const ul = document.createElement("ul"); ul.className="tier-list";
+          buckets[t].forEach(i => {
+            const li = document.createElement("li");
             // star
-            const fav=getFavorites().includes(i.name);
-            const starBtn=`<button class="btn-star${fav?' favorited':''}" data-action="star" data-name="${i.name}">★</button>`;
-            // alert bell
-            const alEnabled=settings.alerts && i.tier==="S";
-            const bellBtn=`<button class="btn-alert${getAlerts().includes(i.name)?' text-warning':''}" data-action="alert" data-name="${i.name}">🔔</button>`;
-            li.innerHTML=`
-              ${settings.stars?starBtn:''}
+            const favorited = getStorage("stars").includes(i.name);
+            const starBtn = `<button class="btn-star${favorited?" favorited":""}" data-name="${i.name}" data-action="star">★</button>`;
+            // bell
+            const alerted = getStorage("alerts").includes(i.name);
+            const bellBtn = settings.alerts && i.tier==="S"
+              ? `<button class="btn-alert${alerted?" text-warning":""}" data-name="${i.name}" data-action="alert">🔔</button>`
+              : "";
+            li.innerHTML = `
+              ${settings.stars ? starBtn : ""}
               ${i.name} — ${i.today!=null?`$${i.today.toFixed(2)}`:"—"}
-              <button class="btn btn-sm btn-outline-success ms-2" data-action="list" data-name="${i.name}">＋</button>
-              ${settings.alerts?bellBtn:''}
+              <button class="btn btn-sm btn-outline-success ms-2" data-name="${i.name}" data-action="list">＋</button>
+              ${bellBtn}
               <span class="badge bg-secondary">${i.tier}</span>
             `;
             ul.appendChild(li);
           });
-          section.appendChild(ul);
-          slide.appendChild(section);
+          sec.appendChild(ul);
+          slide.appendChild(sec);
         });
 
         inner.appendChild(slide);
       });
 
       // init carousel
-      const carEl=document.getElementById("produceCarousel");
-      const car=new bootstrap.Carousel(carEl,{interval:false,wrap:false});
-      document.getElementById("prevBtn").onclick=()=>car.prev();
-      document.getElementById("nextBtn").onclick=()=>car.next();
+      const carEl = document.getElementById("produceCarousel");
+      const car = new bootstrap.Carousel(carEl, { interval:false, wrap:false });
+      document.getElementById("prevBtn").onclick = () => car.prev();
+      document.getElementById("nextBtn").onclick = () => car.next();
 
-      // delegate buttons
-      inner.onclick=e=>{
-        const btn=e.target.closest("button[data-action]");
+      // delegate clicks
+      inner.onclick = e => {
+        const btn = e.target.closest("button[data-action]");
         if(!btn) return;
-        const name=btn.dataset.name;
-        switch(btn.dataset.action){
-          case "list": addToList(name); break;
-          case "star": toggleFavorite(name); break;
-          case "alert": toggleAlert(name); break;
-        }
+        const { action, name } = btn.dataset;
+        if(action==="list") addToList(name);
+        if(action==="star") toggleItem("stars", name);
+        if(action==="alert") toggleItem("alerts", name);
       };
 
-      // update badge
       updateListBadge();
     }
 
-    // initial
-    document.getElementById("searchBox").addEventListener("input",e=>{
-      const term=e.target.value.toLowerCase();
-      document.querySelectorAll(".tier-list li").forEach(li=>{
-        li.style.display=li.textContent.toLowerCase().includes(term)?"":"none";
+    // 8) Search filter
+    document.getElementById("searchBox").addEventListener("input", e => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll(".tier-list li").forEach(li => {
+        li.style.display = li.textContent.toLowerCase().includes(q) ? "" : "none";
       });
     });
+
+    // kick it off
     buildCarousel();
   </script>
 </body>
