@@ -302,7 +302,6 @@ cell.innerHTML = `
   <div class="name">${it.name}</div>
   <div class="price">${it.today!=null ? `$${it.today.toFixed(2)}/lb` : "—"}</div>
   <div class="card-footer">
-    <!-- always render the star button -->
     <button class="btn-star${getStorage("stars").includes(it.name) ? " favorited" : ""}"
             data-action="star" data-name="${it.name}">
       ★
@@ -317,7 +316,6 @@ cell.innerHTML = `
          </button>`
       : ""
     }
-    <span class="badge bg-secondary ms-1">${it.tier}</span>
   </div>
 `;
             grid.appendChild(cell);
