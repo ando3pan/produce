@@ -80,25 +80,46 @@
 </head>
 <body>
 
-  <!-- Top Navbar -->
-  <nav class="navbar navbar-light bg-white border-bottom fixed-top">
-    <div class="container-fluid">
-      <button id="prevBtn" class="btn btn-link"><i class="bi bi-chevron-left fs-4"></i></button>
-      <div class="flex-grow-1 mx-2">
-        <input id="searchBox" class="form-control" type="search" placeholder="Search produce…">
-      </div>
-      <button id="nextBtn" class="btn btn-link"><i class="bi bi-chevron-right fs-4"></i></button>
-      <div class="dropdown">
-        <button class="btn btn-link" data-bs-toggle="dropdown"><i class="bi bi-gear fs-4"></i></button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#" id="toggleDark">Night Mode</a></li>
-          <li><a class="dropdown-item" href="#" id="toggleStars">★ Show Favorites</a></li>
-          <li><a class="dropdown-item" href="#" id="openAlertModal">🔔 Alert Settings</a></li>
-          <li><a class="dropdown-item" href="#" id="toggleLang">Español</a></li>
-        </ul>
-      </div>
+ <!-- Top Navbar -->
+<nav class="navbar navbar-light bg-white border-bottom fixed-top">
+  <div class="container-fluid align-items-center">
+
+    <!-- Logo -->
+    <a class="navbar-brand p-0 me-3" href="/">
+      <img src="images/logo.png" alt="Seasonal Produce" style="max-height:40px;">
+    </a>
+
+    <!-- Previous month -->
+    <button id="prevBtn" class="btn btn-link">
+      <i class="bi bi-chevron-left fs-4"></i>
+    </button>
+
+    <!-- Search box -->
+    <div class="flex-grow-1 mx-2">
+      <input id="searchBox" class="form-control" type="search" placeholder="Search produce…">
     </div>
-  </nav>
+
+    <!-- Next month -->
+    <button id="nextBtn" class="btn btn-link">
+      <i class="bi bi-chevron-right fs-4"></i>
+    </button>
+
+    <!-- Settings dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-link" data-bs-toggle="dropdown">
+        <i class="bi bi-gear fs-4"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" id="toggleDark">Night Mode</a></li>
+        <li><a class="dropdown-item" href="#" id="toggleStars">★ Show Favorites</a></li>
+        <li><a class="dropdown-item" href="#" id="openAlertModal">🔔 Alert Settings</a></li>
+        <li><a class="dropdown-item" href="#" id="toggleLang">Español</a></li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
 
   <!-- Carousel Content -->
   <div id="produceCarousel" class="carousel slide">
