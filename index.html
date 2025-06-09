@@ -295,16 +295,31 @@
             cell.className="card-cell";
             const fav=getStorage("stars").includes(it.name);
             const bellEnabled=settings.alerts && it.tier==="S";
-            cell.innerHTML=`
-              <img src="https://via.placeholder.com/48?text=${encodeURIComponent(it.name[0])}" alt="${it.name}">
-              <div class="name">${it.name}</div>
-              <div class="price">${it.today!=null?`$${it.today.toFixed(2)}/lb`:"—"}</div>
-              <div class="card-footer">
-                ${settings.stars ? `<button class="btn-star${fav?" favorited":""}" data-action="star" data-name="${it.name}">★</button>` : ""}
-                <button class="btn btn-sm btn-outline-success ms-1" data-action="list" data-name="${it.name}">＋</button>
-                ${bellEnabled ? `<button class="btn-alert${getStorage("alerts").includes(it.name)?" text-warning":""}" data-action="alert" data-name="${it.name}">🔔</button>` : ""}
-                <span class="badge bg-secondary ms-1">${it.tier}</span>
-              </div>`;
+            const initials = it.name.slice(0,2).toUpperCase();
+cell.innerHTML = `
+  <img src="https://via.placeholder.com/48?text=${encodeURIComponent(initials)}"
+       alt="${it.name}">
+  <div class="name">${it.name}</div>
+  <div class="price">${it.today!=null ? `$${it.today.toFixed(2)}/lb` : "—"}</div>
+  <div class="card-footer">
+    <!-- always render the star button -->
+    <button class="btn-star${getStorage("stars").includes(it.name) ? " favorited" : ""}"
+            data-action="star" data-name="${it.name}">
+      ★
+    </button>
+    <button class="btn btn-sm btn-outline-success ms-1" data-action="list" data-name="${it.name}">
+      ＋
+    </button>
+    ${settings.alerts && it.tier === "S"
+      ? `<button class="btn-alert${getStorage("alerts").includes(it.name) ? " text-warning" : ""}"
+                data-action="alert" data-name="${it.name}">
+           🔔
+         </button>`
+      : ""
+    }
+    <span class="badge bg-secondary ms-1">${it.tier}</span>
+  </div>
+`;
             grid.appendChild(cell);
           });
 
