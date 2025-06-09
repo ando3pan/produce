@@ -222,7 +222,13 @@
     document.getElementById("toggleLang").onclick = ()=>{
       settings.esp = !settings.esp; save("esp"); buildCarousel();
     };
-
+    function fileNameFor(name) {
+      return name
+      .toLowerCase()
+      .replace(/ /g, '-')
+      .replace(/[^a-z\-]/g, '')
+      + '.png';
+    }
     function computeTier(today,best){
       if(today==null||best==null) return "D";
       const r = today/best;
@@ -296,24 +302,25 @@
             const fav=getStorage("stars").includes(it.name);
             const bellEnabled=settings.alerts && it.tier==="S";
             const initials = it.name.slice(0,2).toUpperCase();
+            const fname = fileNameFor(it.name);
 cell.innerHTML = `
-  <img src="https://via.placeholder.com/48?text=${encodeURIComponent(initials)}"
-       alt="${it.name}">
+  <img
+    src="images/${fname}"
+    alt="${it.name}"
+    onerror="this.onerror=null;this.src='images/placeholder.png';"
+  >
   <div class="name">${it.name}</div>
   <div class="price">${it.today!=null ? `$${it.today.toFixed(2)}/lb` : "—"}</div>
   <div class="card-footer">
-    <button class="btn-star${getStorage("stars").includes(it.name) ? " favorited" : ""}"
+    <button class="btn-star${getStorage("stars").includes(it.name)?" favorited":""}"
             data-action="star" data-name="${it.name}">
       ★
     </button>
-    <button class="btn btn-sm btn-outline-success ms-1" data-action="list" data-name="${it.name}">
-      ＋
-    </button>
-    ${settings.alerts && it.tier === "S"
-      ? `<button class="btn-alert${getStorage("alerts").includes(it.name) ? " text-warning" : ""}"
-                data-action="alert" data-name="${it.name}">
-           🔔
-         </button>`
+    <button class="btn btn-sm btn-outline-success ms-1"
+            data-action="list" data-name="${it.name}">＋</button>
+    ${settings.alerts && it.tier==="S"
+      ? `<button class="btn-alert${getStorage("alerts").includes(it.name)?" text-warning":""}"
+                data-action="alert" data-name="${it.name}">🔔</button>`
       : ""
     }
   </div>
