@@ -10,16 +10,38 @@
     rel="stylesheet"
   />
   <style>
-    body { padding: 2rem; font-family: sans-serif; background: #f8f9fa; }
-    .carousel-item { padding: 1rem; }
-    h2 { margin-bottom: 1rem; }
-    .tier-section { margin-bottom: 1.5rem; }
-    .tier-section h3 { margin-bottom: .5rem; }
-    .tier-list { list-style: none; padding-left: 0; }
-    .tier-list li { margin: .25rem 0; }
-    .badge { margin-left: .5rem; }
-    .controls { text-align: center; margin-top: 1rem; }
-    .controls button { margin: 0 .5rem; }
+    /* Add extra bottom padding so content isn’t hidden under the navbar */
+    body {
+      padding: 2rem 1rem 5rem;
+      font-family: sans-serif;
+      background: #f8f9fa;
+    }
+    .carousel-item {
+      padding: 1rem;
+    }
+    h2 {
+      margin-bottom: 1rem;
+    }
+    .tier-section {
+      margin-bottom: 1.5rem;
+    }
+    .tier-section h3 {
+      margin-bottom: .5rem;
+    }
+    .tier-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .tier-list li {
+      margin: .25rem 0;
+    }
+    .badge {
+      margin-left: .5rem;
+    }
+    /* Bottom navbar overrides */
+    .navbar.fixed-bottom {
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
@@ -31,15 +53,18 @@
     <div class="carousel-inner" id="carousel-inner"></div>
   </div>
 
-  <div class="controls">
-    <button id="prevBtn" class="btn btn-outline-primary">← Previous</button>
-    <button id="nextBtn" class="btn btn-outline-primary">Next →</button>
-  </div>
+  <!-- Fixed-bottom navbar for controls -->
+  <nav class="navbar fixed-bottom navbar-light bg-light border-top">
+    <div class="container-fluid justify-content-between">
+      <button id="prevBtn" class="btn btn-outline-primary">← Previous</button>
+      <button id="nextBtn" class="btn btn-outline-primary">Next →</button>
+    </div>
+  </nav>
 
-  <!-- Bootstrap JS Bundle -->
+  <!-- Bootstrap JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Full month→produce static data
+    // 1) Static seasonality data
     const seasons = {
       "January":    ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Turnips","Winter Squash"],
       "February":   ["Beets","Cabbage","Carrots","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
@@ -55,28 +80,28 @@
       "December":   ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"]
     };
 
-    const tierLabels = { S:"Top Picks", A:"Great Deals", B:"Okay", D:"Skip" };
-
+    // 2) Tier labels & logic
+    const tierLabels = { S: "Top Picks", A: "Great Deals", B: "Okay", D: "Skip" };
     function computeTier(today, best) {
       if (today == null || best == null) return "D";
-      const r = today / best;
-      if (r <= 1.10) return "S";
-      if (r <= 1.30) return "A";
-      if (r <= 1.60) return "B";
+      const ratio = today / best;
+      if (ratio <= 1.10) return "S";
+      if (ratio <= 1.30) return "A";
+      if (ratio <= 1.60) return "B";
       return "D";
     }
 
+    // 3) Build and initialize carousel
     async function init() {
-      // load prices.json
-      const res = await fetch("prices.json");
-      const prices = await res.json();
+      const resp = await fetch("prices.json");
+      const prices = await resp.json();
 
       const indicators = document.getElementById("carousel-indicators");
       const inner = document.getElementById("carousel-inner");
       const months = Object.keys(seasons);
 
       months.forEach((month, idx) => {
-        // indicator dot
+        // Indicator
         const dot = document.createElement("button");
         dot.type = "button";
         dot.dataset.bsTarget = "#produceCarousel";
@@ -85,11 +110,11 @@
         dot.setAttribute("aria-label", month);
         indicators.appendChild(dot);
 
-        // slide
+        // Slide
         const slide = document.createElement("div");
         slide.className = "carousel-item" + (idx === 0 ? " active" : "");
 
-        // annotate & bucket
+        // Annotate & bucket items
         const annotated = seasons[month].map(name => {
           const p = prices[name] || {};
           return {
@@ -99,18 +124,17 @@
             tier: computeTier(p.today, p.best)
           };
         });
-        const buckets = { S:[], A:[], B:[], D:[] };
+        const buckets = { S: [], A: [], B: [], D: [] };
         annotated.forEach(item => buckets[item.tier].push(item));
 
-        // render
+        // Render tier sections
         slide.innerHTML = `<h2>${month}</h2>` +
           ["S","A","B","D"].map(t => `
             <div class="tier-section">
               <h3>${t} — ${tierLabels[t]}</h3>
               <ul class="tier-list">
                 ${buckets[t].map(i => `
-                  <li>
-                    ${i.name} — ${i.today!=null?`$${i.today.toFixed(2)}`:"—"}
+                  <li>${i.name} — ${i.today != null ? `$${i.today.toFixed(2)}` : "—"}
                     <span class="badge bg-secondary">${i.tier}</span>
                   </li>
                 `).join("")}
@@ -121,14 +145,14 @@
         inner.appendChild(slide);
       });
 
-      // init manual carousel
+      // Initialize manual carousel (no auto-wrap, no auto-slide)
       const carouselEl = document.getElementById("produceCarousel");
       const carousel = new bootstrap.Carousel(carouselEl, {
         interval: false,
         wrap: false
       });
 
-      // wire buttons
+      // Wire Prev/Next buttons
       document.getElementById("prevBtn").onclick = () => carousel.prev();
       document.getElementById("nextBtn").onclick = () => carousel.next();
     }
@@ -137,3 +161,4 @@
   </script>
 </body>
 </html>
+
