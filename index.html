@@ -9,59 +9,74 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
+  <!-- Bootstrap Icons -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    rel="stylesheet"
+  />
   <style>
-    /* Add extra bottom padding so content isn’t hidden under the navbar */
     body {
-      padding: 2rem 1rem 5rem;
+      padding: 4rem 1rem 6rem; /* space for fixed navbars */
       font-family: sans-serif;
       background: #f8f9fa;
     }
-    .carousel-item {
-      padding: 1rem;
+    .carousel-item { padding: 1rem; }
+    h2 { margin-bottom: 1rem; }
+    .tier-section { margin-bottom: 1.5rem; }
+    .tier-section h3 { margin-bottom: .5rem; }
+    .tier-list { list-style: none; padding-left: 0; }
+    .tier-list li { margin: .25rem 0; }
+    .badge { margin-left: .5rem; }
+    .navbar.fixed-top, .navbar.fixed-bottom {
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
-    h2 {
-      margin-bottom: 1rem;
-    }
-    .tier-section {
-      margin-bottom: 1.5rem;
-    }
-    .tier-section h3 {
-      margin-bottom: .5rem;
-    }
-    .tier-list {
-      list-style: none;
-      padding-left: 0;
-    }
-    .tier-list li {
-      margin: .25rem 0;
-    }
-    .badge {
-      margin-left: .5rem;
-    }
-    /* Bottom navbar overrides */
-    .navbar.fixed-bottom {
-      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
-    }
+    /* Search input full width */
+    #searchBox { width: 100%; }
   </style>
 </head>
 <body>
 
-  <h1 class="mb-4 text-center">Seasonal Produce by Month</h1>
+  <!-- Top Navbar -->
+  <nav class="navbar navbar-light bg-white border-bottom fixed-top">
+    <div class="container-fluid">
+      <button id="prevBtn" class="btn btn-link">
+        <i class="bi bi-chevron-left fs-4"></i>
+      </button>
+      <div class="flex-grow-1 mx-2">
+        <input id="searchBox" class="form-control" type="search" placeholder="Search produce…">
+      </div>
+      <button id="nextBtn" class="btn btn-link">
+        <i class="bi bi-chevron-right fs-4"></i>
+      </button>
+    </div>
+  </nav>
 
+  <!-- Carousel Content -->
   <div id="produceCarousel" class="carousel slide">
     <div class="carousel-indicators" id="carousel-indicators"></div>
     <div class="carousel-inner" id="carousel-inner"></div>
   </div>
 
-  <!-- Fixed-bottom navbar for controls -->
+  <!-- Bottom Navbar -->
   <nav class="navbar fixed-bottom navbar-light bg-light border-top">
     <div class="container-fluid justify-content-between">
-      <button id="prevBtn" class="btn btn-outline-primary">← Previous</button>
-      <button id="nextBtn" class="btn btn-outline-primary">Next →</button>
+      <button id="openList" class="btn btn-primary position-relative">
+        <i class="bi bi-cart3"></i> My List
+        <span id="listBadge" class="badge bg-danger position-absolute top-0 start-100 translate-middle">0</span>
+      </button>
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary" data-bs-toggle="dropdown">
+          <i class="bi bi-gear fs-4"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#" id="toggleView">Toggle Calendar/Tier</a></li>
+          <li><a class="dropdown-item" href="#" id="openAlerts">My Alerts</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
-  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // 1) Static seasonality data
@@ -91,8 +106,25 @@
       return "D";
     }
 
-    // 3) Build and initialize carousel
+    // 3) Shopping list in localStorage
+    function getList() {
+      return JSON.parse(localStorage.getItem("shoppingList")||"[]");
+    }
+    function addToList(name) {
+      const list = getList();
+      if (!list.includes(name)) {
+        list.push(name);
+        localStorage.setItem("shoppingList", JSON.stringify(list));
+        updateListBadge();
+      }
+    }
+    function updateListBadge() {
+      document.getElementById("listBadge").textContent = getList().length;
+    }
+
+    // 4) Build carousel and search
     async function init() {
+      updateListBadge();
       const resp = await fetch("prices.json");
       const prices = await resp.json();
 
@@ -127,14 +159,16 @@
         const buckets = { S: [], A: [], B: [], D: [] };
         annotated.forEach(item => buckets[item.tier].push(item));
 
-        // Render tier sections
+        // Render tier sections with “+” buttons
         slide.innerHTML = `<h2>${month}</h2>` +
           ["S","A","B","D"].map(t => `
             <div class="tier-section">
               <h3>${t} — ${tierLabels[t]}</h3>
               <ul class="tier-list">
                 ${buckets[t].map(i => `
-                  <li>${i.name} — ${i.today != null ? `$${i.today.toFixed(2)}` : "—"}
+                  <li>
+                    ${i.name} — ${i.today != null ? `$${i.today.toFixed(2)}` : "—"}
+                    <button class="btn btn-sm btn-outline-success ms-2" data-name="${i.name}">＋</button>
                     <span class="badge bg-secondary">${i.tier}</span>
                   </li>
                 `).join("")}
@@ -145,20 +179,36 @@
         inner.appendChild(slide);
       });
 
-      // Initialize manual carousel (no auto-wrap, no auto-slide)
+      // Initialize manual carousel
       const carouselEl = document.getElementById("produceCarousel");
       const carousel = new bootstrap.Carousel(carouselEl, {
         interval: false,
         wrap: false
       });
 
-      // Wire Prev/Next buttons
+      // Wire Prev/Next
       document.getElementById("prevBtn").onclick = () => carousel.prev();
       document.getElementById("nextBtn").onclick = () => carousel.next();
+
+      // Wire add-to-list buttons
+      inner.addEventListener("click", e => {
+        if (e.target.matches("button[data-name]")) {
+          addToList(e.target.dataset.name);
+        }
+      });
+
+      // Live search filtering
+      document.getElementById("searchBox").addEventListener("input", e => {
+        const term = e.target.value.trim().toLowerCase();
+        document.querySelectorAll(".tier-list li").forEach(li => {
+          li.style.display = li.textContent.toLowerCase().includes(term) ? "" : "none";
+        });
+      });
     }
 
     init();
   </script>
 </body>
 </html>
+
 
