@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Seasonal Produce Tier Carousel</title>
-  <!-- Bootstrap 5 CSS -->
+  <!-- Bootstrap CSS -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+    rel="stylesheet"/>
   <!-- Bootstrap Icons -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-    rel="stylesheet"
-  />
+    rel="stylesheet"/>
   <style>
     body {
       padding: 4rem 1rem 6rem;
@@ -25,25 +23,55 @@
       background: #121212;
       color: #e0e0e0;
     }
-    .carousel-item { padding: 1rem; }
     h2, h3 { transition: color 0.3s; }
     body.dark h2, body.dark h3 { color: #e0e0e0; }
-    .tier-section { margin-bottom: 1.5rem; }
-    .tier-list { list-style: none; padding-left: 0; }
-    .tier-list li {
-      margin: .25rem 0;
+
+    /* Tier Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-cell {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       display: flex;
+      flex-direction: column;
       align-items: center;
+      text-align: center;
+      padding: 0.5rem;
+    }
+    .card-cell img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 0.25rem;
+    }
+    .card-cell .name { font-weight: bold; font-size: 0.9rem; }
+    .card-cell .price { flex-grow: 1; font-size: 0.85rem; color: #333; }
+    .card-cell .card-footer {
+      border-top: 1px solid #eee;
+      padding-top: 0.25rem;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .btn-star, .btn-alert {
       background: none;
       border: none;
-      padding: 0 .25rem;
       font-size: 1.2rem;
       cursor: pointer;
+      padding: 0 .25rem;
+      color: #bbb;
     }
     .btn-star.favorited { color: gold; }
-    .badge { margin-left: .5rem; }
+    .btn-alert.text-warning { color: gold!important; }
+    .badge { margin-left: 0.5rem; }
+
+    /* Navbars */
     .navbar.fixed-top, .navbar.fixed-bottom {
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
@@ -55,23 +83,17 @@
   <!-- Top Navbar -->
   <nav class="navbar navbar-light bg-white border-bottom fixed-top">
     <div class="container-fluid">
-      <button id="prevBtn" class="btn btn-link">
-        <i class="bi bi-chevron-left fs-4"></i>
-      </button>
+      <button id="prevBtn" class="btn btn-link"><i class="bi bi-chevron-left fs-4"></i></button>
       <div class="flex-grow-1 mx-2">
         <input id="searchBox" class="form-control" type="search" placeholder="Search produce…">
       </div>
-      <button id="nextBtn" class="btn btn-link">
-        <i class="bi bi-chevron-right fs-4"></i>
-      </button>
+      <button id="nextBtn" class="btn btn-link"><i class="bi bi-chevron-right fs-4"></i></button>
       <div class="dropdown">
-        <button class="btn btn-link" data-bs-toggle="dropdown">
-          <i class="bi bi-gear fs-4"></i>
-        </button>
+        <button class="btn btn-link" data-bs-toggle="dropdown"><i class="bi bi-gear fs-4"></i></button>
         <ul class="dropdown-menu dropdown-menu-end">
           <li><a class="dropdown-item" href="#" id="toggleDark">Night Mode</a></li>
           <li><a class="dropdown-item" href="#" id="toggleStars">★ Show Favorites</a></li>
-          <li><a class="dropdown-item" href="#" id="toggleAlerts">🔔 S-Tier Alerts</a></li>
+          <li><a class="dropdown-item" href="#" id="openAlertModal">🔔 Alert Settings</a></li>
           <li><a class="dropdown-item" href="#" id="toggleLang">Español</a></li>
         </ul>
       </div>
@@ -102,6 +124,37 @@
     </div>
   </div>
 
+  <!-- Alert Settings Modal -->
+  <div class="modal fade" id="alertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Alert Settings</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="alertEmail" class="form-label">Email for notifications</label>
+            <input type="email" id="alertEmail" class="form-control" placeholder="you@example.com"/>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="globalEmailAlerts"/>
+            <label class="form-check-label" for="globalEmailAlerts">
+              Enable email notifications for S-tier items
+            </label>
+          </div>
+          <small class="text-muted d-block mt-2">
+            We’ll only notify you when a favorited item hits S-tier.
+          </small>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="saveAlertSettings" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bottom Navbar -->
   <nav class="navbar fixed-bottom navbar-light bg-light border-top">
     <div class="container-fluid justify-content-between">
@@ -117,33 +170,32 @@
   <script>
     // 1) Seasonality data
     const seasonsEN = {
-      "January":    ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Turnips","Winter Squash"],
-      "February":   ["Beets","Cabbage","Carrots","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
-      "March":      ["Apples","Cabbage","Carrots","Dried Beans","Herbs","Onions","Parsnips","Potatoes","Turnips","Winter Squash"],
-      "April":      ["Apples","Carrots","Dried Beans","Herbs","Lettuce","Onions","Parsnips","Potatoes","Radishes"],
-      "May":        ["Apples","Asparagus","Beet Greens","Dried Beans","Herbs","Lettuce","Onions","Potatoes","Radishes","Rhubarb","Spinach","Turnip Greens"],
-      "June":       ["Apples","Asparagus","Beet Greens","Beets","Broccoli","Cabbage","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Potatoes","Radishes","Rhubarb","Spinach","Strawberries","Summer Squash","Swiss Chard"],
-      "July":       ["Apples","Beet Greens","Beets","Blueberries","Broccoli","Cabbage","Carrots","Cherries","Collard Greens","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Peppers","Potatoes","Radishes","Raspberries","Rhubarb","Snap Beans","Spinach","Strawberries","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
-      "August":     ["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Leeks","Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers","Plums","Potatoes","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
-      "September":  ["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Brussels Sprouts","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers","Plums","Potatoes","Pumpkin","Radishes","Raspberries","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
-      "October":    ["Apples","Beets","Broccoli","Brussels Sprouts","Cabbage","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Dried Beans","Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions","Parsnips","Pears","Peppers","Potatoes","Pumpkins","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Turnips","Zucchini"],
-      "November":   ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
-      "December":   ["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"]
-    };
-    const seasonsES = {
-      "Enero":    seasonsEN.January,   "Febrero": seasonsEN.February,
-      "Marzo":    seasonsEN.March,     "Abril":   seasonsEN.April,
-      "Mayo":     seasonsEN.May,       "Junio":   seasonsEN.June,
-      "Julio":    seasonsEN.July,      "Agosto":  seasonsEN.August,
-      "Septiembre":seasonsEN.September,"Octubre": seasonsEN.October,
-      "Noviembre":seasonsEN.November,  "Diciembre":seasonsEN.December
+      "January":["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Turnips","Winter Squash"],
+      "February":["Beets","Cabbage","Carrots","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
+      "March":["Apples","Cabbage","Carrots","Dried Beans","Herbs","Onions","Parsnips","Potatoes","Turnips","Winter Squash"],
+      "April":["Apples","Carrots","Dried Beans","Herbs","Lettuce","Onions","Parsnips","Potatoes","Radishes"],
+      "May":["Apples","Asparagus","Beet Greens","Dried Beans","Herbs","Lettuce","Onions","Potatoes","Radishes","Rhubarb","Spinach","Turnip Greens"],
+      "June":["Apples","Asparagus","Beet Greens","Beets","Broccoli","Cabbage","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Potatoes","Radishes","Rhubarb","Spinach","Strawberries","Summer Squash","Swiss Chard"],
+      "July":["Apples","Beet Greens","Beets","Blueberries","Broccoli","Cabbage","Carrots","Cherries","Collard Greens","Dried Beans","Garlic","Herbs","Lettuce","Mustard Greens","Onions","Peas","Peppers","Potatoes","Radishes","Raspberries","Rhubarb","Snap Beans","Spinach","Strawberries","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
+      "August":["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Eggplant","Garlic","Grapes","Herbs","Leeks","Lettuce","Mustard Greens","Onions","Peaches","Pears","Peppers","Plums","Potatoes","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Zucchini"],
+      "September":["Apples","Beet Greens","Beets","Blackberries","Blueberries","Broccoli","Brussels Sprouts","Cabbage","Cantaloupe","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cu```
+      "October":["Apples","Beets","Broccoli","Brussels Sprouts","Cabbage","Carrots","Cauliflower","Celery","Collard Greens","Corn","Cucumbers","Dried Beans","Eggplant","Garlic","Grapes","Herbs","Kale","Leeks","Lettuce","Mustard Greens","Onions","Parsnips","Pears","Peppers","Potatoes","Pumpkins","Radishes","Snap Beans","Spinach","Summer Squash","Swiss Chard","Tomatoes","Turnips","Zucchini"],
+      "November":["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"],
+      "December":["Apples","Avocados","Bananas","Beets","Brussels Sprouts","Cabbage","Carrots","Celery","Collard Greens","Grapefruit","Kale","Kiwifruit","Leeks","Lemons","Limes","Onions","Parsnips","Pears","Potatoes","Spinach","Turnips","Winter Squash"]
     };
 
-    // 2) Tier labels
+    const seasonsES = {
+      "Enero":    seasonsEN["January"],   "Febrero": seasonsEN["February"],
+      "Marzo":    seasonsEN["March"],     "Abril":   seasonsEN["April"],
+      "Mayo":     seasonsEN["May"],       "Junio":   seasonsEN["June"],
+      "Julio":    seasonsEN["July"],      "Agosto":  seasonsEN["August"],
+      "Septiembre":seasonsEN["September"],"Octubre": seasonsEN["October"],
+      "Noviembre":seasonsEN["November"],  "Diciembre":seasonsEN["December"]
+    };
+
     const tierEN = { S:"Top Picks", A:"Great Deals", B:"Okay", D:"Skip" };
     const tierES = { S:"Mejores", A:"Grandes Ofertas", B:"Aceptable", D:"Omitir" };
 
-    // 3) Settings
     const settings = {
       dark: JSON.parse(localStorage.getItem("dark"))||false,
       stars: JSON.parse(localStorage.getItem("stars"))||false,
@@ -158,147 +210,159 @@
     document.getElementById("toggleStars").onclick = ()=>{
       settings.stars = !settings.stars; save("stars"); buildCarousel();
     };
-    document.getElementById("toggleAlerts").onclick = ()=>{
-      settings.alerts = !settings.alerts; save("alerts"); buildCarousel();
+    document.getElementById("openAlertModal").onclick = e=>{
+      e.preventDefault();
+      // load existing
+      document.getElementById("alertEmail").value =
+        localStorage.getItem("alertEmail")||"";
+      document.getElementById("globalEmailAlerts").checked =
+        JSON.parse(localStorage.getItem("globalEmailAlerts"))||false;
+      new bootstrap.Modal(document.getElementById("alertModal")).show();
     };
     document.getElementById("toggleLang").onclick = ()=>{
       settings.esp = !settings.esp; save("esp"); buildCarousel();
     };
 
-    // 4) Tier logic
     function computeTier(today,best){
       if(today==null||best==null) return "D";
-      const r=today/best;
+      const r = today/best;
       if(r<=1.10) return "S";
       if(r<=1.30) return "A";
       if(r<=1.60) return "B";
       return "D";
     }
 
-    // 5) Storage helpers
-    const getS = k=>JSON.parse(localStorage.getItem(k))||[];
-    function toggleSI(k,name){
-      const a=getS(k),i=a.indexOf(name);
-      if(i>=0) a.splice(i,1); else a.push(name);
-      localStorage.setItem(k,JSON.stringify(a));
+    const getStorage = k=>JSON.parse(localStorage.getItem(k))||[];
+    function toggleStorageItem(k,name){
+      const arr=getStorage(k), idx=arr.indexOf(name);
+      if(idx>=0) arr.splice(idx,1); else arr.push(name);
+      localStorage.setItem(k, JSON.stringify(arr));
       buildCarousel();
     }
-    function getList(){return getS("shoppingList");}
+    function getList(){ return getStorage("shoppingList"); }
     function addToList(name){
-      const l=getList(); if(!l.includes(name)) l.push(name);
-      localStorage.setItem("shoppingList",JSON.stringify(l));
+      const list=getList();
+      if(!list.includes(name)) list.push(name);
+      localStorage.setItem("shoppingList", JSON.stringify(list));
       updateListBadge();
     }
     function updateListBadge(){
-      document.getElementById("listBadge").textContent=getList().length;
+      document.getElementById("listBadge").textContent = getList().length;
     }
 
-    // 6) Build carousel
     async function buildCarousel(){
-      document.body.classList.toggle("dark",settings.dark);
+      document.body.classList.toggle("dark", settings.dark);
       const seasons = settings.esp ? seasonsES : seasonsEN;
-      const labels = settings.esp ? tierES : tierEN;
-      const prices = await (await fetch("prices.json")).json();
+      const labels  = settings.esp ? tierES     : tierEN;
+      const prices  = await (await fetch("prices.json")).json();
 
-      const ind = document.getElementById("carousel-indicators");
+      const ind   = document.getElementById("carousel-indicators");
       const inner = document.getElementById("carousel-inner");
-      ind.innerHTML=""; inner.innerHTML="";
+      ind.innerHTML = ""; inner.innerHTML = "";
 
-      Object.keys(seasons).forEach((month, idx)=>{
+      Object.keys(seasons).forEach((month, i)=>{
         // indicator
         const dot=document.createElement("button");
-        dot.type="button"; dot.dataset.bsTarget="#produceCarousel";
-        dot.dataset.bsSlideTo=idx;
-        if(idx===0) dot.classList.add("active");
-        dot.setAttribute("aria-label",month);
+        dot.type="button";
+        dot.dataset.bsTarget="#produceCarousel";
+        dot.dataset.bsSlideTo=i;
+        if(i===0) dot.classList.add("active");
+        dot.setAttribute("aria-label", month);
         ind.appendChild(dot);
 
         // slide
         const slide=document.createElement("div");
-        slide.className="carousel-item"+(idx===0?" active":"");
-        slide.innerHTML=`<h2>${month}</h2>`;
+        slide.className = "carousel-item" + (i===0 ? " active" : "");
+        slide.innerHTML = `<h2>${month}</h2>`;
 
-        // annotate & bucket
+        // buckets
         const items=seasons[month].map(name=>{
           const p=prices[name]||{};
           return { name, today:p.today, best:p.best, tier:computeTier(p.today,p.best) };
         });
-        const buckets={S:[],A:[],B:[],D:[]};
-        items.forEach(i=>buckets[i.tier].push(i));
+        const buckets = { S:[], A:[], B:[], D:[] };
+        items.forEach(it=>buckets[it.tier].push(it));
 
         ["S","A","B","D"].forEach(t=>{
-          const sec=document.createElement("div");
-          sec.className="tier-section";
-          sec.innerHTML=`<h3>${t} — ${labels[t]}</h3>`;
-          const ul=document.createElement("ul"); ul.className="tier-list";
-          buckets[t].forEach(i=>{
-            const fav=getS("stars").includes(i.name);
-            const starBtn=settings.stars
-              ? `<button class="btn-star${fav?" favorited":""}" data-action="star" data-name="${i.name}">★</button>`
-              : "";
-            const bellBtn=settings.alerts && i.tier==="S"
-              ? `<button class="btn-alert${getS("alerts").includes(i.name)?" text-warning":""}" data-action="alert" data-name="${i.name}">🔔</button>`
-              : "";
-            const li=document.createElement("li");
-            li.innerHTML=`
-              ${starBtn}
-              ${i.name} — ${i.today!=null?`$${i.today.toFixed(2)}`:"—"}
-              <button class="btn btn-sm btn-outline-success ms-2" data-action="list" data-name="${i.name}">＋</button>
-              ${bellBtn}
-              <span class="badge bg-secondary">${i.tier}</span>
-            `;
-            ul.appendChild(li);
+          const sect=document.createElement("div");
+          sect.className="tier-section";
+          sect.innerHTML=`<h3>${t} – ${labels[t]}</h3>`;
+          const grid=document.createElement("div");
+          grid.className="card-grid";
+
+          buckets[t].forEach(it=>{
+            const cell=document.createElement("div");
+            cell.className="card-cell";
+            const fav=getStorage("stars").includes(it.name);
+            const bellEnabled=settings.alerts && it.tier==="S";
+            cell.innerHTML=`
+              <img src="https://via.placeholder.com/48?text=${encodeURIComponent(it.name[0])}" alt="${it.name}">
+              <div class="name">${it.name}</div>
+              <div class="price">${it.today!=null?`$${it.today.toFixed(2)}/lb`:"—"}</div>
+              <div class="card-footer">
+                ${settings.stars ? `<button class="btn-star${fav?" favorited":""}" data-action="star" data-name="${it.name}">★</button>` : ""}
+                <button class="btn btn-sm btn-outline-success ms-1" data-action="list" data-name="${it.name}">＋</button>
+                ${bellEnabled ? `<button class="btn-alert${getStorage("alerts").includes(it.name)?" text-warning":""}" data-action="alert" data-name="${it.name}">🔔</button>` : ""}
+                <span class="badge bg-secondary ms-1">${it.tier}</span>
+              </div>`;
+            grid.appendChild(cell);
           });
-          sec.appendChild(ul);
-          slide.appendChild(sec);
+
+          sect.appendChild(grid);
+          slide.appendChild(sect);
         });
 
         inner.appendChild(slide);
       });
 
-      const carEl=document.getElementById("produceCarousel");
-      const car=new bootstrap.Carousel(carEl,{interval:false,wrap:false});
-      document.getElementById("prevBtn").onclick=()=>car.prev();
-      document.getElementById("nextBtn").onclick=()=>car.next();
+      const carousel = new bootstrap.Carousel(
+        document.getElementById("produceCarousel"),
+        { interval:false, wrap:false }
+      );
+      document.getElementById("prevBtn").onclick = ()=>carousel.prev();
+      document.getElementById("nextBtn").onclick = ()=>carousel.next();
 
-      inner.onclick=e=>{
-        const btn=e.target.closest("button[data-action]");
+      inner.onclick = e=>{
+        const btn = e.target.closest("button[data-action]");
         if(!btn) return;
-        const {action,name}=btn.dataset;
+        const { action, name } = btn.dataset;
         if(action==="list") addToList(name);
-        if(action==="star") toggleSI("stars",name);
-        if(action==="alert") toggleSI("alerts",name);
+        if(action==="star") toggleStorageItem("stars", name);
+        if(action==="alert") toggleStorageItem("alerts", name);
       };
 
       updateListBadge();
     }
 
-    // 7) “My List” modal logic
-    const cartModalEl=document.getElementById("cartModal");
-    const cartModal=new bootstrap.Modal(cartModalEl);
-    document.getElementById("openList").onclick=()=>{
-      const ul=document.getElementById("cartItems");
-      const list=getList();
-      ul.innerHTML="";
-      if(list.length===0){
-        ul.innerHTML='<li class="list-group-item">Your list is empty.</li>';
+    // Save alert settings
+    document.getElementById("saveAlertSettings").onclick = ()=>{
+      const email = document.getElementById("alertEmail").value.trim();
+      const enabled = document.getElementById("globalEmailAlerts").checked;
+      localStorage.setItem("alertEmail", email);
+      localStorage.setItem("globalEmailAlerts", JSON.stringify(enabled));
+      bootstrap.Modal.getInstance(document.getElementById("alertModal")).hide();
+      alert("Alert settings saved!");
+    };
+
+    // My List modal
+    const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
+    document.getElementById("openList").onclick = ()=>{
+      const ul = document.getElementById("cartItems"), list = getList();
+      ul.innerHTML = "";
+      if(!list.length) {
+        ul.innerHTML = '<li class="list-group-item">Your list is empty.</li>';
       } else {
         list.forEach(name=>{
-          const li=document.createElement("li");
-          li.className="list-group-item d-flex justify-content-between align-items-center";
-          li.textContent=name;
-          const btn=document.createElement("button");
-          btn.className="btn btn-sm btn-outline-danger";
-          btn.textContent="Remove";
-          btn.onclick=()=>{
-            const arr=getList(), idx=arr.indexOf(name);
-            if(idx>=0){
-              arr.splice(idx,1);
-              localStorage.setItem("shoppingList",JSON.stringify(arr));
-              updateListBadge();
-              li.remove();
-              if(arr.length===0) ul.innerHTML='<li class="list-group-item">Your list is empty.</li>';
-            }
+          const li = document.createElement("li");
+          li.className = "list-group-item d-flex justify-content-between align-items-center";
+          li.textContent = name;
+          const btn = document.createElement("button");
+          btn.className = "btn btn-sm btn-outline-danger";
+          btn.textContent = "Remove";
+          btn.onclick = ()=>{
+            const arr = getList(), idx = arr.indexOf(name);
+            if(idx>=0){ arr.splice(idx,1); localStorage.setItem("shoppingList", JSON.stringify(arr)); updateListBadge(); li.remove();}
+            if(!arr.length) ul.innerHTML = '<li class="list-group-item">Your list is empty.</li>';
           };
           li.appendChild(btn);
           ul.appendChild(li);
@@ -307,15 +371,15 @@
       cartModal.show();
     };
 
-    // 8) Live search
+    // Live search
     document.getElementById("searchBox").addEventListener("input", e=>{
-      const q=e.target.value.toLowerCase();
-      document.querySelectorAll(".tier-list li").forEach(li=>{
-        li.style.display=li.textContent.toLowerCase().includes(q)?"":"none";
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll(".card-cell").forEach(cell=>{
+        cell.style.display = cell.textContent.toLowerCase().includes(q) ? "" : "none";
       });
     });
 
-    // initial render
+    // Initialize
     buildCarousel();
   </script>
 </body>
