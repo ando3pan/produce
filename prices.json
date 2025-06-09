@@ -1,226 +1,58 @@
 {
-  "Apples": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Asparagus": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Avocados": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Bananas": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Beet Greens": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Beets": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Blackberries": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Blueberries": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Broccoli": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Brussels Sprouts": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Cabbage": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Cantaloupe": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Carrots": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Cauliflower": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Celery": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Cherries": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Collard Greens": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Corn": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Cucumbers": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Dried Beans": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Eggplant": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Garlic": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Grapefruit": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Grapes": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Herbs": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Kale": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Kiwifruit": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Leeks": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Lemons": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Lettuce": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Limes": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Mustard Greens": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Onions": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Parsnips": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Peaches": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Pears": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Peas": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Peppers": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Pineapple": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Plums": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Potatoes": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Pumpkin": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Pumpkins": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Radishes": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Raspberries": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Rhubarb": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Snap Beans": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Spinach": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Strawberries": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Summer Squash": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Swiss Chard": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Tomatoes": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Turnip Greens": {
-    "today": 3.0,
-    "best": 1.0
-  },
-  "Turnips": {
-    "today": 1.0,
-    "best": 1.0
-  },
-  "Winter Squash": {
-    "today": 2.0,
-    "best": 1.0
-  },
-  "Zucchini": {
-    "today": 3.0,
-    "best": 1.0
-  }
+  "Apples": {"today": 0.82, "best": 1.00},
+  "Asparagus": {"today": 1.35, "best": 1.00},
+  "Avocados": {"today": 0.64, "best": 1.00},
+  "Bananas": {"today": 1.12, "best": 1.00},
+  "Beet Greens": {"today": 0.93, "best": 1.00},
+  "Beets": {"today": 1.47, "best": 1.00},
+  "Blackberries": {"today": 1.08, "best": 1.00},
+  "Blueberries": {"today": 0.58, "best": 1.00},
+  "Broccoli": {"today": 1.26, "best": 1.00},
+  "Brussels Sprouts": {"today": 1.53, "best": 1.00},
+  "Cabbage": {"today": 0.77, "best": 1.00},
+  "Cantaloupe": {"today": 1.01, "best": 1.00},
+  "Carrots": {"today": 1.34, "best": 1.00},
+  "Cauliflower": {"today": 0.89, "best": 1.00},
+  "Celery": {"today": 1.10, "best": 1.00},
+  "Cherries": {"today": 1.42, "best": 1.00},
+  "Collard Greens": {"today": 0.71, "best": 1.00},
+  "Corn": {"today": 1.18, "best": 1.00},
+  "Cucumbers": {"today": 0.66, "best": 1.00},
+  "Dried Beans": {"today": 1.61, "best": 1.00},
+  "Eggplant": {"today": 1.05, "best": 1.00},
+  "Garlic": {"today": 0.88, "best": 1.00},
+  "Grapefruit": {"today": 1.22, "best": 1.00},
+  "Grapes": {"today": 0.97, "best": 1.00},
+  "Herbs": {"today": 1.30, "best": 1.00},
+  "Kale": {"today": 0.54, "best": 1.00},
+  "Kiwifruit": {"today": 1.49, "best": 1.00},
+  "Leeks": {"today": 1.03, "best": 1.00},
+  "Lemons": {"today": 0.79, "best": 1.00},
+  "Lettuce": {"today": 1.21, "best": 1.00},
+  "Limes": {"today": 0.68, "best": 1.00},
+  "Mustard Greens": {"today": 1.40, "best": 1.00},
+  "Onions": {"today": 1.06, "best": 1.00},
+  "Parsnips": {"today": 0.92, "best": 1.00},
+  "Peaches": {"today": 1.55, "best": 1.00},
+  "Pears": {"today": 0.83, "best": 1.00},
+  "Peas": {"today": 1.12, "best": 1.00},
+  "Peppers": {"today": 1.29, "best": 1.00},
+  "Pineapple": {"today": 0.69, "best": 1.00},
+  "Plums": {"today": 1.47, "best": 1.00},
+  "Potatoes": {"today": 0.99, "best": 1.00},
+  "Pumpkin": {"today": 1.36, "best": 1.00},
+  "Pumpkins": {"today": 1.04, "best": 1.00},
+  "Radishes": {"today": 0.73, "best": 1.00},
+  "Raspberries": {"today": 1.58, "best": 1.00},
+  "Rhubarb": {"today": 0.85, "best": 1.00},
+  "Snap Beans": {"today": 1.20, "best": 1.00},
+  "Spinach": {"today": 1.09, "best": 1.00},
+  "Strawberries": {"today": 0.65, "best": 1.00},
+  "Summer Squash": {"today": 1.27, "best": 1.00},
+  "Swiss Chard": {"today": 0.91, "best": 1.00},
+  "Tomatoes": {"today": 1.32, "best": 1.00},
+  "Turnip Greens": {"today": 0.58, "best": 1.00},
+  "Turnips": {"today": 1.11, "best": 1.00},
+  "Winter Squash": {"today": 1.44, "best": 1.00},
+  "Zucchini": {"today": 0.95, "best": 1.00}
 }
