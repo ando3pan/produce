@@ -13,12 +13,24 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     rel="stylesheet"/>
   <style>
-    body {
-      padding: 4rem 1rem 6rem;
-      font-family: sans-serif;
-      background: #f8f9fa;
-      transition: background 0.3s, color 0.3s;
-    }
+    /* bump the top padding so nothing ever sits underneath the fixed-top navbar */
+body {
+  /* was 4rem top padding; increase to accommodate larger month header */
+  padding: 5rem 1rem 6rem;
+}
+
+/* enlarge and shift the month title down */
+.carousel-item h2 {
+  margin-top: 1.5rem;   /* pushes the “July” (etc.) further below the navbar */
+  font-size: 2rem;      /* make the month label more prominent */
+  font-weight: 600;
+}
+
+/* optional: give the search bar a bit more height so it doesn’t overlap */
+#searchBox {
+  padding: .5rem .75rem;  /* taller input control */
+}
+
     body.dark {
       background: #121212;
       color: #e0e0e0;
